@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     contentSelected.classList.add('show')
   }
-  
+
 
 //scratch card
 // Select the canvas, image, and other elements
@@ -407,3 +407,55 @@ if (scratchCardImage) {
 }
 
 });
+gsap.timeline({
+  scrollTrigger: {
+    trigger: ".grid-container",
+    start: "top top",
+    end: () => innerHeight * 4,
+    scrub: true,
+    pin: ".grid",
+    anticipatePin: 1
+  }
+})
+.set(".gridBlock:not(.centerBlock)", {autoAlpha: 0})
+.to(".gridBlock:not(.centerBlock)", {duration: 0.1, autoAlpha: 1}, 0.001)
+.from(".gridLayer", {
+  scale: 3.3333,
+  ease: "none",
+});
+
+
+// Ensure images are loaded dynamically
+const size = Math.max(innerWidth, innerHeight);
+
+// Set background images for grid blocks using local images, except the center block
+gsap.set('.gridBlock:not(.centerBlock)', {
+  backgroundImage: (i) => `url('images/art${i + 1}.png')`,
+  autoAlpha: 0, // Make them initially hidden
+  scale: 0.8, // Optional: Shrink the blocks initially
+});
+
+// Ensure the center image (art8.png) is visible from the start
+gsap.set('.centerBlock', {
+  autoAlpha: 1,
+  scale: 1, // Normal size
+});
+
+// Trigger the animation once the page is loaded
+window.onload = function() {
+  const bigImg = new Image();
+
+  bigImg.addEventListener('load', function() {
+    // Zoom out and fade in the surrounding blocks
+    gsap.to('.gridBlock:not(.centerBlock)', {
+      autoAlpha: 1, // Fade in
+      scale: 1, // Normal size
+      duration: 1,
+      stagger: 0.2, // Stagger animation for each block
+      ease: 'power2.out',
+    });
+  });
+
+  // Load the big image in the center (art8.png)
+  bigImg.src = `url=('./images/art8.png')`;
+};
