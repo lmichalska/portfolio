@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   particlesJS("particles-js", {
   particles: {
     number: {
-      value: 100,
+      value: 110,
       density: {
         enable: true,
         value_area: 800
@@ -255,13 +255,20 @@ let clearDetectionTimeout = null;
 
 const devicePixelRatio = window.devicePixelRatio || 1;
 
+// Load the cover image (drawing.jpg)
+const coverImage = new Image();
+coverImage.src = 'images/drawing.jpg';  // Path to your cover image
+
+coverImage.onload = () => {
+  adjustCanvasSize();
+};
+
 // Adjust canvas size to match the image dimensions
 function adjustCanvasSize() {
   const imageWidth = revealImage.offsetWidth;
   const imageHeight = revealImage.offsetHeight;
-  
 
-  // Set canvas dimensions based on image
+  // Set canvas dimensions based on the image
   canvas.width = imageWidth * devicePixelRatio;
   canvas.height = imageHeight * devicePixelRatio;
   canvas.style.width = `${imageWidth}px`;
@@ -270,16 +277,12 @@ function adjustCanvasSize() {
   // Scale the canvas for high-DPI devices
   context.scale(devicePixelRatio, devicePixelRatio);
 
-  // Fill the canvas with a cover color (or a cover image if desired)
-  context.fillStyle = '#999';  // Use gray for the scratch-off area
-  context.fillRect(0, 0, imageWidth, imageHeight);
+  // Draw the cover image (drawing.jpg) over the canvas
+  context.drawImage(coverImage, 0, 0, imageWidth, imageHeight);
 
   // Set global composite operation to make scratch-off work
   context.globalCompositeOperation = 'destination-out';
 }
-
-// Call adjustCanvasSize when the window loads
-window.addEventListener('load', adjustCanvasSize);
 
 // Handle the start of scratching
 canvas.addEventListener('pointerdown', (e) => {
@@ -362,6 +365,7 @@ const checkScratchCompletion = () => {
     canvas.classList.add('hidden');  // Hide the canvas once the scratch is complete
   }
 };
+
 
 
 
